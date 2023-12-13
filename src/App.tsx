@@ -30,64 +30,64 @@ function App() {
 
   return (
     <>
-      <div>
+      <div className='container mx-auto flex flex-col justify-center items-center'>
         <img src="/jiggle-logo.png" alt="" width={128} />
-      </div>
-      <div>
-        <input type="file" onChange={(e) => {
-          const file = e.target.files?.[0]
-          if (file) {
-            setSoundFile(file)
+
+        <div className='flex flex-row flex-wrap justify-center items-center'>
+          <input className='file-input file-input-xs' type="file" onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (file) {
+              setSoundFile(file)
+            }
           }
-        }
-        } />
-        <button onClick={() => {
-          if (soundFile) {
-            soundRef.current = new Howl({
-              src: [
-                URL.createObjectURL(soundFile)
-              ], format: ['mp3']
-            })
-          }
-        }}>load</button>
-      </div>
-      <div>
-        {soundFile?.name} -
-        controls: {playId}
-        <div>
-          <button onClick={() => {
-            setPlayId(soundRef.current.play())
-          }}>play</button>
-          <button onClick={() => { soundRef.current.pause() }}>pause</button>
-          <button onClick={() => { soundRef.current.stop() }}>stop</button>
+          } />
+          <button className='btn btn-xs' onClick={() => {
+            if (soundFile) {
+              soundRef.current = new Howl({
+                src: [
+                  URL.createObjectURL(soundFile)
+                ], format: ['mp3']
+              })
+            }
+          }}>load</button>
         </div>
-        {/** add buttons to seek 5s backward and forward */}
-        <div style={{ display: 'flex', flexDirection: "row", justifyContent: 'center', alignItems: "center" }}>
-          <button onClick={() => {
-            soundRef.current.seek(soundRef.current.seek() - 5)
-          }}>-5s</button>
-          <button onClick={() => {
-            soundRef.current.seek(soundRef.current.seek() + 5)
-          }}>+5s</button>
-          <div>|</div>
-          <button onClick={() => {
-            soundRef.current.seek(soundRef.current.seek() - 2)
-          }}>-2s</button>
-          <button onClick={() => {
-            soundRef.current.seek(soundRef.current.seek() + 2)
-          }}>+2s</button>
+
+        <span>{soundFile?.name} {playId}</span>
+        <div className='flex flex-col justify-center items-center gap-2 py-2'>
+          <div className='join'>
+            <button className='btn join-item rounded-l-full' onClick={() => {
+              setPlayId(soundRef.current.play())
+            }}>play</button>
+            <button className='btn join-item' onClick={() => { soundRef.current.pause() }}>pause</button>
+            <button className='btn join-item rounded-r-full' onClick={() => { soundRef.current.stop() }}>stop</button>
+          </div>
+          <div className='flex'>
+            <div className='join'>
+              <button className="btn join-item" onClick={() => {
+                soundRef.current.seek(soundRef.current.seek() - 2)
+              }}>-2s</button>
+              <button className="btn join-item" onClick={() => {
+                soundRef.current.seek(soundRef.current.seek() - 5)
+              }}>-5s</button>
+            </div>
+            <div className='divider divider-horizontal'>|</div>
+            <div className='join'>
+              <button className="btn join-item" onClick={() => {
+                soundRef.current.seek(soundRef.current.seek() + 5)
+              }}>+5s</button>
+              <button className="btn join-item" onClick={() => {
+                soundRef.current.seek(soundRef.current.seek() + 2)
+              }}>+2s</button>
+            </div>
+          </div>
         </div>
-        <div>{time.toFixed(4)}</div>
-        <div>
-          <button onClick={() => {
-            push(soundRef.current.seek())
-          }}>Record</button>
-          <div style={{ display: 'flex', flexDirection: "column" }}>
+        <div className='flex flex-col justify-center items-center gap-1 pb-52'>
+          <div className='flex flex-col'>
             {
               stamps
                 .map(
                   (stamp, index) => {
-                    return <button key={index} onClick={() => {
+                    return <button className="btn" key={index} onClick={() => {
                       soundRef.current.seek(stamp)
                     }}>{stamp}</button>
                   }
@@ -95,9 +95,16 @@ function App() {
             }
           </div>
         </div>
+
+        <div className='btm-nav'>
+          <div className='py-10'>
+            <button className="btn btn-primary btn-lg w-72" onClick={() => {
+              push(soundRef.current.seek())
+            }}>{time.toFixed(4)}</button>
+          </div>
+        </div>
+
       </div>
-
-
     </>
   )
 }
