@@ -1,33 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
+import { Howl } from 'howler';
+import useArray from './libs/use-array';
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [playId, setPlayId] = useState(0)
+  const [time, setTime] = useState(0)
+  const [stamps, { push }] = useArray<number>([])
+  const [soundFile, setSoundFile] = useState<File>()
+
+  const sound = new Howl({
+    src: ['/sample-cut.mp3'],
+  })
+
+  const soundRef = useRef(sound)
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTime(soundRef.current.seek())
+    }, 500)
+
+    return () => {
+      clearInterval(intervalId)
+    }
+
+  }, [])
+
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <img src="/jiggle-logo.png" alt="" width={128} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div>
+        <input type="file" onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) {
+            setSoundFile(file)
+          }
+        }
+        } />
+        <button onClick={() => {
+          soundRef.current = new Howl({
+            src: [
+              URL.createObjectURL(soundFile)
+            ], format: ['mp3']
+          })
+        }}>load</button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div>
+        {soundFile?.name} -
+        controls: {playId}
+        <div>
+          <button onClick={() => {
+            setPlayId(soundRef.current.play())
+          }}>play</button>
+          <button onClick={() => { soundRef.current.pause() }}>pause</button>
+          <button onClick={() => { soundRef.current.stop() }}>stop</button>
+        </div>
+        <div>{time}</div>
+        <div>
+          <button onClick={() => {
+            push(soundRef.current.seek())
+          }}>Record</button>
+          <div style={{ display: 'flex', flexDirection: "column" }}>
+            {
+              stamps
+                .map(
+                  (stamp, index) => {
+                    return <button key={index} onClick={() => {
+                      soundRef.current.seek(stamp)
+                    }}>{stamp}</button>
+                  }
+                )
+            }
+          </div>
+        </div>
+      </div>
+
+
     </>
   )
 }
