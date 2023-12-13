@@ -61,7 +61,23 @@ function App() {
           <button onClick={() => { soundRef.current.pause() }}>pause</button>
           <button onClick={() => { soundRef.current.stop() }}>stop</button>
         </div>
-        <div>{time}</div>
+        {/** add buttons to seek 5s backward and forward */}
+        <div style={{ display: 'flex', flexDirection: "row", justifyContent: 'center', alignItems: "center" }}>
+          <button onClick={() => {
+            soundRef.current.seek(soundRef.current.seek() - 5)
+          }}>-5s</button>
+          <button onClick={() => {
+            soundRef.current.seek(soundRef.current.seek() + 5)
+          }}>+5s</button>
+          <div>|</div>
+          <button onClick={() => {
+            soundRef.current.seek(soundRef.current.seek() - 2)
+          }}>-2s</button>
+          <button onClick={() => {
+            soundRef.current.seek(soundRef.current.seek() + 2)
+          }}>+2s</button>
+        </div>
+        <div>{time.toFixed(4)}</div>
         <div>
           <button onClick={() => {
             push(soundRef.current.seek())
