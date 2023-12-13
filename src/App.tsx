@@ -42,11 +42,13 @@ function App() {
         }
         } />
         <button onClick={() => {
-          soundRef.current = new Howl({
-            src: [
-              URL.createObjectURL(soundFile)
-            ], format: ['mp3']
-          })
+          if (soundFile) {
+            soundRef.current = new Howl({
+              src: [
+                URL.createObjectURL(soundFile)
+              ], format: ['mp3']
+            })
+          }
         }}>load</button>
       </div>
       <div>
